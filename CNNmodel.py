@@ -1,4 +1,5 @@
 import pandas as pd
+from tensorflow import keras
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
@@ -12,7 +13,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Load the dataset
-file_path = r'C:\Users\User\Desktop\Assighments\Semester_2\NLP\wiked_error_correction.csv'
+file_path = r'/Users/amirrulrasyid/Amirrul (Asia Pacific University)/Semester 2 - Jul 2024/Natural Language Processing/Assignment/Program/NLPmodel/NLP-Assignment-SpellChecker/wiked_error_correction.csv'
 df = pd.read_csv(file_path)
 
 erroneous_sentences = df['Error'].tolist()
@@ -29,7 +30,7 @@ tokenizer.fit_on_texts(all_sentences)
 
 # Save the tokenizer
 import pickle
-tokenizer_save_path = 'C:/Users/User/Desktop/saved_model/tokenizer.pkl'
+tokenizer_save_path = '/Users/amirrulrasyid/Amirrul (Asia Pacific University)/Semester 2 - Jul 2024/Natural Language Processing/Assignment/Program/NLPmodel/NLP-Assignment-SpellChecker/tokenizer.pkl'
 with open(tokenizer_save_path, 'wb') as handle:
     pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
@@ -57,7 +58,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # Build the model
 EMBEDDING_DIM = 100
-GLOVE_FILE = r'C:\Users\User\Desktop\Assighments\Semester_2\NLP\glove.6B.100d.txt'
+GLOVE_FILE = r'/Users/amirrulrasyid/Amirrul (Asia Pacific University)/Semester 2 - Jul 2024/Natural Language Processing/Assignment/Program/NLPmodel/NLP-Assignment-SpellChecker/glove.6B.100d.txt'
 
 # Load GloVe embeddings
 embedding_index = {}
@@ -125,5 +126,5 @@ print("Classification Report:")
 print(classification_report(y_test, y_pred_classes))
 
 # Save the model
-model_save_path = 'C:/Users/User/Desktop/saved_model/text_classification_model.h5'
+model_save_path = '/Users/amirrulrasyid/Amirrul (Asia Pacific University)/Semester 2 - Jul 2024/Natural Language Processing/Assignment/Program/NLPmodel/NLP-Assignment-SpellChecker/text_classification_model.h5'
 model.save(model_save_path)
