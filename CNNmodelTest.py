@@ -36,11 +36,11 @@ def test_input_sentence(input_sentence):
     # Tokenize and pad the input sentence
     input_seq = tokenizer.texts_to_sequences([input_sentence])
     input_padded = pad_sequences(input_seq, maxlen=MAX_LENGTH, padding='post')
-    
+
     # Predict with the model
     prediction = model.predict(input_padded)
     predicted_label = (prediction > 0.5).astype("int32")
-    
+
     if predicted_label[0] == 1:  # If there's an error
         words = input_sentence.split()
         corrected_sentence = []

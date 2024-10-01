@@ -79,7 +79,7 @@ for word, i in word_index.items():
 
 # Create the CNN-LSTM hybrid model
 model = Sequential()
-model.add(Embedding(input_dim=VOCAB_SIZE, output_dim=EMBEDDING_DIM, input_length=MAX_LENGTH, 
+model.add(Embedding(input_dim=VOCAB_SIZE, output_dim=EMBEDDING_DIM, input_length=MAX_LENGTH,
                     weights=[embedding_matrix], trainable=False))
 model.add(Conv1D(filters=256, kernel_size=3, activation='relu'))
 model.add(MaxPooling1D(pool_size=2))
