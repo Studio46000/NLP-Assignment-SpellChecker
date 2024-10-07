@@ -3,11 +3,45 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from Levenshtein import distance as levenshtein_distance
 import numpy as np
+<<<<<<< Updated upstream
 
 # Load the saved model
 model_save_path = 'C:/Users/User/Desktop/saved_model/text_classification_model.h5' # Change the path where the model is located
 model = load_model(model_save_path)
 print("Model loaded successfully!")
+=======
+import tensorflow as tf
+import nltk
+import tkinter as tk
+import keras
+from nltk.corpus import brown
+from difflib import get_close_matches
+from collections import defaultdict
+from nltk import bigrams
+import string
+import tkinter.scrolledtext as st
+from keras.preprocessing.sequence import pad_sequences
+from transformers import pipeline
+
+print(keras.__version__)
+# Download necessary resources
+nltk.download('brown')
+nltk.download('punkt')
+
+# Preprocess Brown Corpus
+brown_words = brown.words()
+vocabulary = set(word.lower() for word in brown_words if word.isalpha())
+
+# Helper function to preprocess word
+def preprocess_word(word):
+    word = word.lower()
+    return word.translate(str.maketrans('', '', string.punctuation))
+
+# CNN MODEL LOADING
+cnn_model_path = 'C:/Users/User/Desktop/saved_model/text_classification_model.h5' 
+cnn_model = tf.keras.models.load_model(cnn_model_path)
+print("CNN Model loaded successfully!")
+>>>>>>> Stashed changes
 
 # Load the tokenizer
 tokenizer_save_path = 'C:/Users/User/Desktop/saved_model/tokenizer.pkl' # Change the path where the tokenizer is located
