@@ -2,6 +2,7 @@ import pickle
 import numpy as np
 import tensorflow as tf
 import nltk
+import keras
 import tkinter as tk
 from nltk.corpus import brown
 from difflib import get_close_matches
@@ -9,8 +10,11 @@ from collections import defaultdict
 from nltk import bigrams
 import string
 import tkinter.scrolledtext as st
-from keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.preprocessing.sequence import pad_sequences # type: ignore
 from transformers import pipeline
+
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 
 # Download necessary resources
 nltk.download('brown')
@@ -26,12 +30,12 @@ def preprocess_word(word):
     return word.translate(str.maketrans('', '', string.punctuation))
 
 # CNN MODEL LOADING
-cnn_model_path = 'C:/Users/User/Desktop/saved_model/text_classification_model.h5' 
+cnn_model_path = '/Users/amirrulrasyid/Amirrul (Asia Pacific University)/Semester 2 - Jul 2024/Natural Language Processing/Assignment/Program/NLPmodel/NLP-Assignment-SpellChecker/text_classification_model.h5'
 cnn_model = tf.keras.models.load_model(cnn_model_path)
 print("CNN Model loaded successfully!")
 
 # Load the tokenizer
-tokenizer_path = 'C:/Users/User/Desktop/saved_model/tokenizer.pkl'
+tokenizer_path = '/Users/amirrulrasyid/Amirrul (Asia Pacific University)/Semester 2 - Jul 2024/Natural Language Processing/Assignment/Program/NLPmodel/NLP-Assignment-SpellChecker/tokenizer.pkl'
 with open(tokenizer_path, 'rb') as handle:
     tokenizer = pickle.load(handle)
 
@@ -49,7 +53,7 @@ def load_glove_embeddings(glove_file_path):
             embeddings_index[word] = coefs
     return embeddings_index
 
-glove_file_path = 'C:/Users/User/Desktop/saved_model/glove.6B.100d.txt'
+glove_file_path = '/Users/amirrulrasyid/Amirrul (Asia Pacific University)/Semester 2 - Jul 2024/Natural Language Processing/Assignment/Program/NLPmodel/NLP-Assignment-SpellChecker/glove.6B.100d.txt'
 embeddings_index = load_glove_embeddings(glove_file_path)
 print("GloVe Embeddings loaded successfully!")
 
