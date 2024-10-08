@@ -75,6 +75,7 @@ def get_semantically_similar_words(word, embeddings_index, n=3):
 def test_input_sentence(input_sentence):
     input_seq = tokenizer.texts_to_sequences([input_sentence])
     input_padded = pad_sequences(input_seq, maxlen=MAX_LENGTH, padding='post')
+
     prediction = cnn_model.predict(input_padded)
     predicted_label = (prediction > 0.5).astype("int32")
     return predicted_label[0][0]  # 0: no error, 1: error
