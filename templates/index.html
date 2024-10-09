@@ -3,185 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Spell Checker</title>
-
-    <!-- Google Fonts for modern typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
+    <title>Spell and Grammar Checker</title>
     <style>
-        * {
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
 
-        body {
-            background-color: #f4f7f6;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        h1, h2 {
+            text-align: center;
+            color: #4a90e2;
         }
 
         .container {
-            width: 100%;
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+            max-width: 900px;
+            margin: 50px auto;
             padding: 20px;
-            text-align: center;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            font-weight: 600;
-            color: #007bff;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
 
         textarea {
             width: 100%;
-            height: 150px;
-            padding: 15px;
-            border-radius: 8px;
-            border: 2px solid #ddd;
-            outline: none;
+            height: 120px;
+            padding: 10px;
             font-size: 16px;
-            transition: border-color 0.3s ease;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
             margin-bottom: 20px;
         }
 
-        textarea:focus {
-            border-color: #007bff;
-        }
-
         button {
-            background-color: #007bff;
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4a90e2;
             color: white;
-            padding: 10px 20px;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
+            border-radius: 4px;
             font-size: 16px;
-            transition: background-color 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 20px;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #357abf;
         }
 
-        #corrected-sentence {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            font-size: 16px;
-            line-height: 1.6;
-            text-align: left;
+        .output-section {
+            margin-bottom: 20px;
         }
 
-        .highlight {
+        .error-highlight {
             color: red;
             font-weight: bold;
             cursor: pointer;
-            text-decoration: underline;
         }
 
-        #suggestion-popup {
-            display: none;
-            position: absolute;
-            background-color: #f1f1f1;
-            border: 1px solid #ccc;
+        #correctedSentence, #spellingErrors, #grammarErrors {
             padding: 10px;
             border-radius: 5px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            line-height: 1.6;
         }
 
-        #suggestion-text {
-            color: #007bff;
+        #spellingErrors .error-highlight {
+            background-color: #ffcccc;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        #spellingErrors, #grammarErrors {
+            min-height: 50px;
+        }
+
+        #correctedSentence {
             font-weight: bold;
         }
 
-        .container h3 {
-            color: #333;
-            font-weight: 600;
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f9;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>AI Spell Checker</h1>
-        <textarea id="sentence" placeholder="Type a sentence here..."></textarea>
-        <br>
-        <button onclick="checkSentence()">Check Sentence</button>
-        <h3>Corrected Sentence (Errors highlighted):</h3>
-        <p id="corrected-sentence"></p>
+        <h1>Spell and Grammar Checker</h1>
+
+        <textarea id="sentenceInput" placeholder="Enter your sentence..."></textarea>
+
+        <button id="checkButton">Check Sentence</button>
+
+        <div class="output-section">
+            <h2>Corrected Sentence</h2>
+            <div id="correctedSentence"></div>
+        </div>
+
+        <div class="output-section">
+            <h2>Errors</h2>
+            <div id="spellingErrors"></div>
+        </div>
+
+        <div class="output-section">
+            <h2>Grammar Errors</h2>
+            <div id="grammarErrors"></div>
+        </div>
     </div>
 
-    <div id="suggestion-popup">
-        <p>Suggestion: <span id="suggestion-text"></span></p>
+    <div class="footer">
+        <p>&copy; 2024 Spell and Grammar Checker</p>
     </div>
 
     <script>
-        function checkSentence() {
-            const sentence = document.getElementById('sentence').value;
+        document.getElementById('checkButton').addEventListener('click', function () {
+            const sentence = document.getElementById('sentenceInput').value;
 
             fetch('/correct_sentence', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ sentence: sentence }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sentence: sentence })
             })
             .then(response => response.json())
             .then(data => {
-                displayCorrectedSentence(data.original_sentence, data.errors);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        }
+                // Display the corrected sentence
+                const correctedText = data.corrected_sentence;
+                document.getElementById('correctedSentence').textContent = correctedText;
 
-        function displayCorrectedSentence(originalSentence, errors) {
-            const correctedSentenceElement = document.getElementById('corrected-sentence');
-            let sentenceHtml = '';
-
-            // Split the original sentence into words
-            const words = originalSentence.split(' ');
-
-            // Loop through words and highlight errors
-            words.forEach((word, index) => {
-                const error = errors.find(e => e.index === index);
-                if (error) {
-                    sentenceHtml += `<span class="highlight" data-suggestion="${error.suggestion}" onclick="showSuggestion(event, '${error.suggestion}')">${word}</span> `;
+                // Highlight spelling errors
+                const spellingErrorsDiv = document.getElementById('spellingErrors');
+                spellingErrorsDiv.innerHTML = '';
+                if (data.errors.length > 0) {
+                    data.errors.forEach(error => {
+                        spellingErrorsDiv.innerHTML += `<strong class="error-highlight">${error.original}</strong> -> ${error.suggestion}<br>`;
+                    });
                 } else {
-                    sentenceHtml += word + ' ';
+                    spellingErrorsDiv.innerHTML = 'No spelling errors found.';
+                }
+
+                // Display grammar errors
+                const grammarErrorsDiv = document.getElementById('grammarErrors');
+                grammarErrorsDiv.innerHTML = '';
+                if (data.grammar_errors.length > 0) {
+                    data.grammar_errors.forEach(error => {
+                        grammarErrorsDiv.innerHTML += `${error.error} Suggestions: ${error.suggestions.join(', ')}<br>`;
+                    });
+                } else {
+                    grammarErrorsDiv.innerHTML = 'No grammar errors found.';
                 }
             });
-
-            correctedSentenceElement.innerHTML = sentenceHtml.trim();
-        }
-
-        function showSuggestion(event, suggestion) {
-            const popup = document.getElementById('suggestion-popup');
-            const suggestionText = document.getElementById('suggestion-text');
-
-            suggestionText.textContent = suggestion;
-            popup.style.display = 'block';
-            popup.style.left = event.pageX + 'px';
-            popup.style.top = event.pageY + 'px';
-        }
-
-        // Close the suggestion popup when clicked outside
-        document.addEventListener('click', function(event) {
-            const popup = document.getElementById('suggestion-popup');
-            if (!event.target.classList.contains('highlight')) {
-                popup.style.display = 'none';
-            }
         });
     </script>
 </body>
